@@ -1,6 +1,6 @@
 
 
-const KEY='kifnet_v2';
+const KEY='kifnet';
 const cats=['خوراکی','قبض','اینترنت','حمل‌ونقل','خرید','پوشاک','تفریح','سلامت','آموزش','اجاره','حقوق','فروش','هدیه','سایر'];
 const themes=[['آبی','#1769ff','#0b2a5b'],['صورتی','#e74d9b','#8e245d'],['سبز','#16a36a','#075d3b'],['قرمز','#e24f52','#8f202b'],['بنفش','#7957d5','#45288e'],['نارنجی','#e98a2b','#934b0a'],['فیروزه‌ای','#149eaa','#075d66'],['سرمه‌ای','#31558f','#182d55']];
 let txFilter='all';
@@ -55,7 +55,7 @@ function openObligation(){openModal('چک / قسط',`<form class="form" onsubmit
 function submitObligation(e){e.preventDefault();const f=new FormData(e.target);state.obligations.push({id:crypto.randomUUID(),title:f.get('title'),kind:f.get('kind'),amount:Number(f.get('amount')),due:f.get('due')});save();closeModal();renderObligations();showToast('ثبت شد')}
 function renderNotes(){document.getElementById('notesInput').value=state.notes||''}
 function saveNotes(){state.notes=document.getElementById('notesInput').value;save();showToast('ذخیره شد')}
-function backupData(){const payload={...state,backupVersion:6,backupAt:new Date().toISOString()};const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(payload,null,2)],{type:'application/json;charset=utf-8'}));a.download='kifnet-backup-v6.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);showToast('فایل پشتیبان آماده شد')}
+function backupData(){const payload={...state,backupVersion:7,backupAt:new Date().toISOString()};const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(payload,null,2)],{type:'application/json;charset=utf-8'}));a.download='kifnet-backup-v7.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);showToast('فایل پشتیبان آماده شد')}
 function restoreData(e){const file=e.target.files?.[0];if(!file)return;const reader=new FileReader();reader.onload=()=>{try{const imported=normalizeState(JSON.parse(reader.result));if(!confirm('داده‌های فعلی با این فایل پشتیبان جایگزین شود؟'))return;state=imported;save();renderAll();showToast('پشتیبان بازیابی شد')}catch{showToast('فایل پشتیبان نامعتبر است')}finally{e.target.value=''}};reader.readAsText(file)}
 function renderThemes(){document.getElementById('themes').innerHTML=themes.map(t=>`<button class="theme ${state.theme===t[1]?'selected':''}" style="background:${t[1]}" onclick="setTheme('${t[1]}')">${t[0]}</button>`).join('');document.querySelectorAll('[data-mode]').forEach(b=>b.classList.toggle('active',b.dataset.mode===state.mode))}
 function themePair(c){const t=themes.find(x=>x[1]===c);return t||themes[0]}
